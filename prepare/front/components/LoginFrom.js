@@ -8,7 +8,7 @@ const ButtonWrapper = styled.div`
   margin-top: 10px;
 `;
 const FormWrapper = styled(Form)`
-  padding: 10px;
+  padding: 10px !important;
 `
 
 const LoginForm = ({ setIsLoggedIn }) => {
