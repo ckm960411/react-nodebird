@@ -1,55 +1,21 @@
-import { HYDRATE } from 'next-redux-wrapper'
+import { HYDRATE } from "next-redux-wrapper";
+import user from "./user";
+import post from "./post";
+import { combineReducers } from "redux";
 
-const initialState = {
-  user: {
-    isLoggedIn: false,
-    user: null,
-    singUpData: {},
-    loginData: {},
+const rootReducer = combineReducers({
+  // SSR 을 위해서 HYDRATE case 의 index 가 추가됨
+  index: (state = {}, action) => {
+    switch (action.type) {
+      case HYDRATE:
+        console.log('HYDRATE', action)
+        return { ...state, ...action.payload };
+      default:
+        return state;
+    }
   },
-  post: {
-    mainPosts: [],
-  }
-}
+  user,
+  post,
+});
 
-// Action Creator (액션을 계속 여러개를 만드는 건 비효율적이므로 액션 생성 함수를 씀)
-export const loginAction = (data) => {
-  return {
-    type: 'LOG_IN',
-    data
-  }
-}
-export const logoutAction = () => {
-  return {
-    type: 'LOG_OUT',
-  }
-}
-
-const rootReducer = (state = initialState, action) => {
-  switch (action.type) {
-    case HYDRATE :
-      return { ...state, ...action.payload}
-    case 'LOG_IN' :
-      return {
-        ...state,
-        user: {
-          ...state.user,
-          isLoggedIn: true,
-          user: action.data,
-        }
-      }
-    case 'LOG_OUT' :
-      return {
-        ...state,
-        user: {
-          ...state.user,
-          isLoggedIn: false,
-          user: null,
-        }
-      }
-    default :
-      return state
-  }
-}
-
-export default rootReducer
+export default rootReducer;
