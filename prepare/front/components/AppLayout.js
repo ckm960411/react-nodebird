@@ -17,20 +17,20 @@ const AppLayout = ({ children }) => {
   return (
     <div>
       <Menu mode="horizontal">
-        <Menu.Item>
+        <Menu.Item key="menu_item_1">
           <Link href="/">
             <a>노드버드</a>
           </Link>
         </Menu.Item>
-        <Menu.Item>
+        <Menu.Item key="menu_item_2">
           <Link href="/profile">
             <a>프로필</a>
           </Link>
         </Menu.Item>
-        <Menu.Item>
+        <Menu.Item key="menu_item_3">
           <SearchInput enterButton />
         </Menu.Item>
-        <Menu.Item>
+        <Menu.Item key="menu_item_4">
           <Link href="/signup">
             <a>회원가입</a>
           </Link>
