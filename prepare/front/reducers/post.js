@@ -7,7 +7,7 @@ export const initialState = {
         nickname: "제로초",
       },
       content: `첫 번째 게시글 #해시태그 #익스프레스`,
-      Image: [
+      Images: [
         {
           src: "http://www.kyobobook.co.kr/product/detailViewKor.laf?ejkGb=KOR&mallGb=KOR&barcode=9791158392239&orderClick=LEa&Kc=#N,",
         },
@@ -40,7 +40,7 @@ export const initialState = {
         nickname: "경민복",
       },
       content: `경민복의 두 번째 게시글 #해시태그 #익스프레스`,
-      Image: [
+      Images: [
         {
           src: "http://www.kyobobook.co.kr/product/detailViewKor.laf?ejkGb=KOR&mallGb=KOR&barcode=9791158392239&orderClick=LEa&Kc=#N,",
         },
