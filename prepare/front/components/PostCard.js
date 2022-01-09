@@ -1,5 +1,5 @@
 import { EllipsisOutlined, HeartOutlined, HeartTwoTone, MessageOutlined, RetweetOutlined } from "@ant-design/icons/lib/icons"
-import { Avatar, Button, Card, Popover } from "antd"
+import { Avatar, Button, Card, Comment, List, Popover } from "antd"
 import ButtonGroup from "antd/lib/button/button-group"
 import { Content } from "antd/lib/layout/layout"
 import Image from "next/image"
@@ -7,6 +7,7 @@ import { useSelector } from "react-redux"
 import PropTypes from 'prop-types'
 import PostImages from "./PostImages"
 import { useCallback, useState } from "react"
+import CommentForm from "./CommentForm"
 
 const PostCard = ({ post }) => {
   const id = useSelector(state => state.user.me?.id)
@@ -56,7 +57,21 @@ const PostCard = ({ post }) => {
       </Card>
       {commentFormOpened && (
         <div>
-          댓글 부분
+          <CommentForm post={post} />
+          <List
+            header={`${post.Comments.length}개의 댓글`}
+            itemLayout="horizontal"
+            dataSource={post.Comments}
+            renderItem={item => (
+              <li>
+                <Comment 
+                  author={item.User.nickname}
+                  avatar={<Avatar>{item.User.nickname[0]}</Avatar>}
+                  content={item.content}
+                />
+              </li>
+            )}
+          />
         </div>
       )}
       {/* <CommentForm />
