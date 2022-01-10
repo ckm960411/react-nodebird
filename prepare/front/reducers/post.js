@@ -96,6 +96,7 @@ export const addComment = (data) => ({
   type: ADD_COMMENT_REQUEST,
   data
 });
+
 const dummyPost = data => ({
   id: shortid.generate(),
   content: data,
@@ -106,6 +107,14 @@ const dummyPost = data => ({
   Images: [],
   Comments: [],
 });
+const dummyComments = data => ({
+  id: shortid.generate(),
+  content: data,
+  User: {
+    id: 1,
+    nickname: "제로초",
+  },
+})
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
@@ -139,8 +148,16 @@ const reducer = (state = initialState, action) => {
         addCommentError: null,
       }
     case ADD_COMMENT_SUCCESS:
+      // 액션객체로 넘겨 받은 데이터는
+      // { content: commentText, postId: post.id, userId: id,}
+      const postIndex = state.mainPosts.findIndex(v => v.id === action.data.postId)
+      const post = { ...state.mainPosts[postIndex] }
+      post.Comments = [dummyComments(action.data.content), ...post.Comments]
+      const mainPosts = [...state.mainPosts]
+      mainPosts[postIndex] = post
       return {
         ...state,
+        mainPosts,
         addCommentLoading: false,
         addCommentDone: true,
       };
