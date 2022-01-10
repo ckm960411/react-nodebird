@@ -1,22 +1,28 @@
 import { Button, Form, Input } from "antd"
 import Image from "next/image"
-import { useCallback, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
+import useInput from "../hooks/useInput"
 import { addPost } from "../reducers/post"
 
 const PostForm = () => {
-  const { imagePaths } = useSelector(state => state.post)
+  const { imagePaths, addPostDone } = useSelector(state => state.post)
   const dispatch = useDispatch()
+  const [text, onChangeText, setText] = useInput('')
+  
+  useEffect(() => {
+    if (addPostDone) {
+      setText('')
+    } // 포스팅이 완료되었을 때에서야 text 를 지워줌
+  }, [addPostDone])
+  
+  const onSubmit = useCallback(() => {
+    dispatch(addPost(text))
+  }, [text])
+  
   const imageInputRef = useRef()
-  const [text, setText] = useState('')
-
-  const onChangeText = useCallback(e => setText(e.target.value), [])
   const onClickImageUpload = useCallback(() => {
     imageInputRef.current.click()
-  }, [])
-  const onSubmit = useCallback(() => {
-    dispatch(addPost) // 현재 post.js 리듀서에서 addPost 를 함수가 아닌 액션 객체로 만들어놓았음
-    setText('')
   }, [])
 
   return (
