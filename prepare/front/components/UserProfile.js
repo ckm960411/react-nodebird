@@ -16,7 +16,7 @@ const UserProfile = () => {
       <Card
         actions={[
           <div key="twit">짹짹<br />{me.Posts.length}</div>, // 더미데이터 만든걸 넣음
-          <div key="followings">팔로잉<br />{me.Following.length}</div>,
+          <div key="followings">팔로잉<br />{me.Followings.length}</div>,
           <div key="followings">팔로워<br />{me.Followers.length}</div>
         ]}
       >

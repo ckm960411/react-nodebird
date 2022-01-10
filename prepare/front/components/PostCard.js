@@ -1,8 +1,5 @@
 import { EllipsisOutlined, HeartOutlined, HeartTwoTone, MessageOutlined, RetweetOutlined } from "@ant-design/icons/lib/icons"
 import { Avatar, Button, Card, Comment, List, Popover } from "antd"
-import ButtonGroup from "antd/lib/button/button-group"
-import { Content } from "antd/lib/layout/layout"
-import Image from "next/image"
 import { useSelector } from "react-redux"
 import PropTypes from 'prop-types'
 import PostImages from "./PostImages"
@@ -83,7 +80,7 @@ const PostCard = ({ post }) => {
 
 PostCard.propTypes = {
   post: PropTypes.shape({
-    id: PropTypes.number,
+    id: PropTypes.string,
     User: PropTypes.object,
     content: PropTypes.string,
     createAt: PropTypes.object,
