@@ -8,6 +8,8 @@ module.exports = (sequelize, DataTypes) => {
     charset: 'utf8',
     collate: 'utf8_general_ci',
   })
-  Image.associate = (db) => {}
+  Image.associate = (db) => {
+    db.Image.belongsTo(db.Post) // 하나의 Image 는 하나의 Post 에 속함
+  }
   return Image
 }
