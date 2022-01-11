@@ -4,6 +4,14 @@ export const initialState = {
   me: null,
   singUpData: {},
   loginData: {},
+  // 팔로우 관련
+  followLoading: false,
+  followDone: false,
+  followError: null,
+  // 언팔로우 관련
+  unfollowLoading: false,
+  unfollowDone: false,
+  unfollowError: null,
   // 로그인 관련
   logInLoading: false,
   logInDone: false,
@@ -82,6 +90,36 @@ export const logoutRequestAction = () => {
 const reducer = (state = initialState, action) => {
   return produce(state, (draft) => {
     switch (action.type) {
+      // 팔로우 관련
+      case FOLLOW_REQUEST:
+        draft.followLoading = true;
+        draft.followDone = false;
+        draft.followError = null;
+        break;
+      case FOLLOW_SUCCESS:
+        draft.followLoading = false;
+        draft.followDone = true;
+        draft.me.Followings.push({ id: action.data })
+        break;
+      case LOG_IN_FAILURE:
+        draft.followLoading = false;
+        draft.followError = action.error;
+        break;
+      // 언팔로우 관련
+      case UNFOLLOW_REQUEST:
+        draft.unfollowLoading = true;
+        draft.unfollowDone = false;
+        draft.unfollowError = null;
+        break;
+      case UNFOLLOW_SUCCESS:
+        draft.unfollowLoading = false;
+        draft.unfollowDone = true;
+        draft.me.Followings = draft.me.Followings.filter(v => v.id !== action.data)
+        break;
+      case UNFOLLOW_FAILURE:
+        draft.unfollowLoading = false;
+        draft.unfollowError = action.error;
+        break;
       // 로그인 관련
       case LOG_IN_REQUEST:
         draft.logInLoading = true;
