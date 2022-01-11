@@ -3,48 +3,13 @@ import produce from "immer";
 import faker from 'faker';
 
 export const initialState = {
-  mainPosts: [
-    {
-      id: "1",
-      User: {
-        id: 1,
-        nickname: "제로초",
-      },
-      content: `첫 번째 게시글 #해시태그 #익스프레스`,
-      Images: [
-        {
-          id: shortid.generate(),
-          src: "https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyMDA5MTVfMTA4%2FMDAxNjAwMDk4MDUxNDg2.GXiwoSsmUUrbzXf8PioukfmzAq8Ess1iLzbPxHPlqjgg.emvP-77slx4sItEbq8UcGWWRow1J1flpxBFhDJfcDpQg.JPEG.jooheepaik71%2F1600098051217.jpg&type=sc960_832",
-        },
-        {
-          id: shortid.generate(),
-          src: "https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyMDA2MjZfNzYg%2FMDAxNTkzMTI4Njk2MDIx.ZUguuZYwUbYs_ItjW9HjO_YzneNb8khrEeCRiUw4uLcg.6ZO92XXjZinaDOP4g6gemdLmPOZJXb2qL21B1aQ35rYg.JPEG.zpdl92%2F10.jpg&type=sc960_832",
-        },
-        // {
-        //   src: "https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyMTEyMTVfMjc5%2FMDAxNjM5NTc3MDg1OTcx.T6W76YSraXqd7hoPnbdxZiKiFYdurno5kLLJBxlg5a0g.jQ2wWPSG7BRDXbGLLxGK65VFtvlJV-87IoQpKz9t26Ig.JPEG.jasklove22%2FScreenshot%25A3%25DF20211215%25A3%25AD230402%25A3%25DF24_.jpg&type=sc960_832",
-        // },
-      ],
-      Comments: [
-        {
-          id: shortid.generate(),
-          User: {
-            id: shortid.generate(),
-            nickname: "nero",
-          },
-          content: "우와 개정판이 나왔군요",
-        },
-        {
-          id: shortid.generate(),
-          User: {
-            id: shortid.generate(),
-            nickname: "hero",
-          },
-          content: "얼른 사고싶어요!",
-        },
-      ],
-    },
-  ],
+  mainPosts: [],
   imagePaths: [],
+  // 게시글 로드 관련
+  hasMorePosts: true,
+  loadPostsLoading: false,
+  loadPostsDone: false,
+  loadPostsError: null,
   // 게시글 작성 관련
   addPostLoading: false,
   addPostDone: false,
@@ -59,28 +24,32 @@ export const initialState = {
   addCommentError: null,
 };
 
-// faker 로 가짜 정보 생성
-initialState.mainPosts = initialState.mainPosts.concat(
-  Array(20).fill().map(() => ({
+// 인피니트 스크롤링을 적용하여 faker 로 가짜 정보 생성
+export const generateDummyPost = (number) => Array(number).fill().map(() => ({
+  id: shortid.generate(),
+  User: {
     id: shortid.generate(),
+    nickname: faker.name.findName()
+  },
+  content: faker.lorem.paragraph(),
+  Images: [{
+    src: "https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyMDA5MTVfMTA4%2FMDAxNjAwMDk4MDUxNDg2.GXiwoSsmUUrbzXf8PioukfmzAq8Ess1iLzbPxHPlqjgg.emvP-77slx4sItEbq8UcGWWRow1J1flpxBFhDJfcDpQg.JPEG.jooheepaik71%2F1600098051217.jpg&type=sc960_832",
+  }],
+  Comments: [{
     User: {
       id: shortid.generate(),
-      nickname: faker.name.findName()
+      nickname: faker.name.findName(),
     },
-    content: faker.lorem.paragraph(),
-    Images: [{
-      src: faker.image.imageUrl(),
-    }],
-    Comments: [{
-      User: {
-        id: shortid.generate(),
-        nickname: faker.name.findName(),
-      },
-      content: faker.lorem.sentence(),
-    }],
-  }))
-)
+    content: faker.lorem.sentence(),
+  }],
+}))
 
+// initialState.mainPosts = initialState.mainPosts.concat(generateDummyPost(10))
+
+
+export const LOAD_POSTS_REQUEST = "LOAD_POST_REQUEST";
+export const LOAD_POSTS_SUCCESS = "LOAD_POST_SUCCESS";
+export const LOAD_POSTS_FAILURE = "LOAD_POST_FAILURE";
 
 export const ADD_POST_REQUEST = "ADD_POST_REQUEST";
 export const ADD_POST_SUCCESS = "ADD_POST_SUCCESS";
@@ -126,6 +95,23 @@ const dummyComment = (data) => ({
 const reducer = (state = initialState, action) => {
   return produce(state, (draft) => {
     switch (action.type) {
+      // 게시글 로드 관련
+      case LOAD_POSTS_REQUEST:
+        draft.loadPostsLoading = true;
+        draft.loadPostsDone = false;
+        draft.loadPostsError = null;
+        break;
+      case LOAD_POSTS_SUCCESS:
+        draft.mainPosts = draft.mainPosts.concat(action.data) // 10개 불러온 더미데이터와 기존 데이터를 합침
+        draft.loadPostsLoading = false;
+        draft.loadPostsDone = true;
+        // 더 가져올 포스트가 없을 경우
+        draft.hasMorePosts = draft.mainPosts.length < 50 // (일단 50개로 전체게시물 수를 제한해봄)
+        break;
+      case LOAD_POSTS_FAILURE:
+        draft.loadPostsLoading = false;
+        draft.loadPostsError = action.error;
+        break;
       // 게시글 작성 관련
       case ADD_POST_REQUEST:
         draft.addPostLoading = true;
