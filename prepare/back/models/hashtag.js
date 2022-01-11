@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
     collate: 'utf8mb4_general_ci',
   })
   Hashtag.associate = (db) => {
-    db.Hashtag.belongsToMany(db.Post) // Hashtag 와 Post 는 '다대다 관계'
+    db.Hashtag.belongsToMany(db.Post, { through: 'PostHashtag'}) // Hashtag 와 Post 는 '다대다 관계'
   }
   return Hashtag
 }

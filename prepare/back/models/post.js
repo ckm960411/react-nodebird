@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
   })
   Post.associate = (db) => {
     db.Post.belongsTo(db.User) // 하나의 Post 는 User 에 속함
-    db.Post.belongsToMany(db.Hashtag) // Post 와 Hashtag 는 '다대다 관계'
+    db.Post.belongsToMany(db.Hashtag, { through: 'PostHashtag' }) // Post 와 Hashtag 는 '다대다 관계'
     db.Post.hasMany(db.Comment) // 하나의 Post 에 여러 Comment
     db.Post.hasMany(db.Image) // 하나의 Post 에 여러 Image
     db.Post.belongsTo(db.Post, { as: 'RetweetId' })
