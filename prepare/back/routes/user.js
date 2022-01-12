@@ -22,10 +22,16 @@ router.post('/login', (req, res, next) => {  // POST /user/login
         console.error(error)
         next(loginError)
       }
-      return res.json(user)
+      return res.status(200).json(user)
     })
   })(req, res, next)
 }) 
+
+router.post('/logout', (req, res, next) => {
+  req.logout()
+  req.session.destroy()
+  res.status(200).send('로그아웃 성공!')
+})
 
 router.post('/', async (req, res, next) => { // POST /user
   try {
