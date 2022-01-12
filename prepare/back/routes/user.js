@@ -1,6 +1,6 @@
 const express = require('express')
 const bcrypt = require('bcrypt')
-const { User } = require('../models/user') // 원래는 db.User 로 꺼내지만 구조분해 할당함
+const { User } = require('../models') // 원래는 db.User 로 꺼내지만 구조분해 할당함
 
 const router = express.Router()
 
@@ -20,10 +20,10 @@ router.post('/', async (req, res) => { // POST /user
       nickname: req.body.nickname,
       password: hashedPassword,
     })
-    res.send('회원가입 완료!')
+    res.status(201).send('회원가입 완료!')
   } catch (error) {
     console.error(error)
-    next(error) 
+    // next(error) // status 500
   }
 })
 
