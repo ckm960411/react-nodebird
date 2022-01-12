@@ -4,11 +4,14 @@ const cors = require('cors')
 const postRouter = require('./routes/post')
 const userRouter = require('./routes/user')
 const db = require('./models')
-const app = express()
+const passportConfig = require('./passport')
 
+const app = express()
 db.sequelize.sync()
   .then(() => console.log('db 연결 성공'))
   .catch(console.error)
+
+  passportConfig()
 
 // 프론트에서 보낸 정보를 라우터에서 해석할 수 있게끔 해줌
 app.use(cors({
