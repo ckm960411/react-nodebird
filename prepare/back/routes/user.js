@@ -7,6 +7,32 @@ const { isLoggedIn, isNotLoggedIn } = require('./middlewares')
 
 const router = express.Router()
 
+router.get('/', async (req, res, next) => {
+  try {
+    if (req.user) {
+      // req.user 가 있으면 user 를 가져옴
+      const fullUserWithoutPassword = await User.findOne({
+        where: { id: req.user.id },
+        attributes: {
+          exclude: ['password']
+        },
+        include: [
+          { model: Post, attributes: ['id'] },
+          { model: User, as: 'Followings', attributes: ['id'] },
+          { model: User, as: 'Followers', attributes: ['id'] }
+        ]
+      })
+      res.status(200).json(fullUserWithoutPassword)
+    } else {
+      // req.user 가 없으면 그냥 아무것도 안함
+      res.status(200).json(null)
+    }
+  } catch(error) {
+    console.error(error)
+    next(error)
+  }
+})
+
 router.post('/login', isNotLoggedIn, (req, res, next) => {  // POST /user/login
   passport.authenticate('local', (error, user, info) => {
     // 서버 에러가 나는 경우
