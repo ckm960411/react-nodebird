@@ -1,5 +1,5 @@
 const express = require('express')
-const { Post, Comment } = require('../models')
+const { Post, User, Image, Comment } = require('../models')
 const { isLoggedIn } = require('./middlewares')
 
 const router = express.Router()
@@ -10,7 +10,15 @@ router.post('/', isLoggedIn, async (req, res, next) => { // POST /post
       content: req.body.content,
       UserId: req.user.id
     })
-    res.status(201).json(post)
+    const fullPost = await Post.findOne({
+      where: { id: post.id },
+      include: [
+        { model: Image }, // 게시글에 달린 이미지
+        { model: Comment }, // 게시글에 달린 댓글
+        { model: User } // 게시글 작성자
+      ]
+    })
+    res.status(201).json(fullPost)
   } catch(error) {
     console.error(error)
     next(error)

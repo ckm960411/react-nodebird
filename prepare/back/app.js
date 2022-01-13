@@ -22,7 +22,7 @@ db.sequelize.sync()
 // 프론트에서 보낸 정보를 라우터에서 해석할 수 있게끔 해줌
 app.use(cors({
   origin: true, // res.setHeader('Access-Control-Origin-Allow', '*')
-  credentials: false, // 나중에 true 로 바꾸어야 함
+  credentials: true, // cookie🍪를 다른 도메인간 넘겨주는 역할
 })) 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
