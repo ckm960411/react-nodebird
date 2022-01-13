@@ -1,9 +1,7 @@
 import axios from "axios";
 import { all, call, delay, fork, put, takeLatest } from "redux-saga/effects";
 import { 
-  FOLLOW_FAILURE,
-  FOLLOW_REQUEST,
-  FOLLOW_SUCCESS,
+  FOLLOW_FAILURE, FOLLOW_REQUEST, FOLLOW_SUCCESS,
   LOG_IN_FAILURE, LOG_IN_REQUEST, LOG_IN_SUCCESS, 
   LOG_OUT_FAILURE, LOG_OUT_REQUEST, LOG_OUT_SUCCESS,
   SIGN_UP_FAILURE, SIGN_UP_REQUEST, SIGN_UP_SUCCESS, 
@@ -70,8 +68,7 @@ function logOutAPI() {
 }
 function* logOut() {
   try {
-    // const result = yield call(logOutAPI)
-    yield delay(1000)
+    yield call(logOutAPI)
     yield put({
       type: LOG_OUT_SUCCESS,
     })

@@ -1,7 +1,8 @@
 const express = require('express')
 const bcrypt = require('bcrypt')
 const passport = require('passport')
-const { User } = require('../models') // 원래는 db.User 로 꺼내지만 구조분해 할당함
+const { User, Post } = require('../models') // 원래는 db.User 로 꺼내지만 구조분해 할당함
+const db = require('../models')
 
 const router = express.Router()
 
@@ -22,7 +23,18 @@ router.post('/login', (req, res, next) => {  // POST /user/login
         console.error(error)
         next(loginError)
       }
-      return res.status(200).json(user)
+      const fullUserWithoutPassword = await User.findOne({
+        where: { id: user.id },
+        attributes: {
+          exclude: ['password']
+        },
+        include: [
+          { model: Post },
+          { model: User, as: 'Followings' },
+          { model: User, as: 'Followers' }
+        ]
+      })
+      return res.status(200).json(fullUserWithoutPassword)
     })
   })(req, res, next)
 }) 

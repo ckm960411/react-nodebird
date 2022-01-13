@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { Button, Input } from "antd";
 import Form from "antd/lib/form/Form";
 import Link from "next/link";
@@ -16,14 +16,21 @@ const FormWrapper = styled(Form)`
 
 const LoginForm = () => {
   const dispatch = useDispatch()
-  const { logInLoading } = useSelector(state => state.user)
+  const { logInLoading, logInError } = useSelector(state => state.user)
   const [email, onChangeEmail] = useInput('')
   const [password, onChangePassword] = useInput("");
+
+  useEffect(() => {
+    if (logInError) {
+      alert(logInError)
+      console.log(logInError)
+    }
+  }, [logInError])
 
   const onSubmitForm = useCallback(() => {
     console.log(email, password);
     dispatch(loginRequestAction({ email, password }))
-  }, [email, password, dispatch]);
+  }, [email, password]);
 
   return (
     <FormWrapper onFinish={onSubmitForm}>

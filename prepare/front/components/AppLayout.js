@@ -21,7 +21,7 @@ const Global = createGlobalStyle`
   .ant-col::last-child {
     padding-right: 0 !important;
   }
-`
+`;
 
 const AppLayout = ({ children }) => {
   const { me } = useSelector((state) => state.user);
@@ -43,11 +43,13 @@ const AppLayout = ({ children }) => {
         <Menu.Item key="menu_item_3">
           <SearchInput enterButton />
         </Menu.Item>
-        <Menu.Item key="menu_item_4">
-          <Link href="/signup">
-            <a>회원가입</a>
-          </Link>
-        </Menu.Item>
+        {me && me.id ? null : (
+          <Menu.Item key="menu_item_4">
+            <Link href="/signup">
+              <a>회원가입</a>
+            </Link>
+          </Menu.Item>
+        )}
       </Menu>
       <Row gutter={8}>
         <Col xs={24} md={6}>
