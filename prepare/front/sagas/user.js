@@ -19,6 +19,7 @@ function* loadUserInfo(action) {
       type: LOAD_USER_INFO_SUCCESS,
       data: result.data
     })
+    console.log(result)
   } catch(error) {
     yield put({
       type: LOAD_USER_INFO_FAILURE,

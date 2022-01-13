@@ -2,7 +2,7 @@ import produce from "immer";
 
 export const initialState = {
   me: null,
-  singUpData: {},
+  signUpData: {},
   loginData: {},
   // 유저 정보 로드 관련
   loadUserInfoLoading: false,
