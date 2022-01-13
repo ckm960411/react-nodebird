@@ -4,9 +4,11 @@ const session = require('express-session')
 const cookieParser = require('cookie-parser')
 const passport = require('passport')
 const dotenv = require('dotenv')
+const morgan = require('morgan')
 
 const postRouter = require('./routes/post')
 const userRouter = require('./routes/user')
+const postsRouter = require('./routes/posts')
 const db = require('./models')
 const passportConfig = require('./passport')
 
@@ -19,7 +21,7 @@ db.sequelize.sync()
 
   passportConfig()
 
-// 프론트에서 보낸 정보를 라우터에서 해석할 수 있게끔 해줌
+app.use(morgan('dev'))
 app.use(cors({
   origin: true, // res.setHeader('Access-Control-Origin-Allow', '*')
   credentials: true, // cookie🍪를 다른 도메인간 넘겨주는 역할
@@ -39,8 +41,9 @@ app.get('/', (req, res) => {
   res.send('hello express')
 })
 
-app.use('/user', userRouter)
+app.use('/posts', postsRouter)
 app.use('/post', postRouter)
+app.use('/user', userRouter)
 
 app.listen(3065, () => {
   console.log('서버 실행 중')

@@ -1,6 +1,4 @@
-import shortid from "shortid";
 import produce from "immer";
-import faker from 'faker';
 
 export const initialState = {
   mainPosts: [],
@@ -23,28 +21,6 @@ export const initialState = {
   addCommentDone: false,
   addCommentError: null,
 };
-
-// 인피니트 스크롤링을 적용하여 faker 로 가짜 정보 생성
-export const generateDummyPost = (number) => Array(number).fill().map(() => ({
-  id: shortid.generate(),
-  User: {
-    id: shortid.generate(),
-    nickname: faker.name.findName()
-  },
-  content: faker.lorem.paragraph(),
-  Images: [{
-    src: "https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyMDA5MTVfMTA4%2FMDAxNjAwMDk4MDUxNDg2.GXiwoSsmUUrbzXf8PioukfmzAq8Ess1iLzbPxHPlqjgg.emvP-77slx4sItEbq8UcGWWRow1J1flpxBFhDJfcDpQg.JPEG.jooheepaik71%2F1600098051217.jpg&type=sc960_832",
-  }],
-  Comments: [{
-    User: {
-      id: shortid.generate(),
-      nickname: faker.name.findName(),
-    },
-    content: faker.lorem.sentence(),
-  }],
-}))
-
-// initialState.mainPosts = initialState.mainPosts.concat(generateDummyPost(10))
 
 
 export const LOAD_POSTS_REQUEST = "LOAD_POST_REQUEST";
@@ -83,7 +59,7 @@ const reducer = (state = initialState, action) => {
         draft.loadPostsError = null;
         break;
       case LOAD_POSTS_SUCCESS:
-        draft.mainPosts = draft.mainPosts.concat(action.data) // 10개 불러온 더미데이터와 기존 데이터를 합침
+        draft.mainPosts = draft.mainPosts.concat(action.data)
         draft.loadPostsLoading = false;
         draft.loadPostsDone = true;
         // 더 가져올 포스트가 없을 경우
