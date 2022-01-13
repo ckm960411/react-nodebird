@@ -1,10 +1,45 @@
 const express = require('express')
+const { Post, Comment } = require('../models')
+const { isLoggedIn } = require('./middlewares')
 
 const router = express.Router()
 
-router.post('/', (req, res) => { // POST /post
-  res.json({ id: 1, content: 'hello' })
+router.post('/', isLoggedIn, async (req, res, next) => { // POST /post
+  try {
+    const post = await Post.create({
+      content: req.body.content,
+      UserId: req.user.id
+    })
+    res.status(201).json(post)
+  } catch(error) {
+    console.error(error)
+    next(error)
+  }
 })
+
+// POST /post/1/comment
+router.post('/:postId/comment', isLoggedIn, async (req, res, next) => { 
+  try {
+    // 현재 params 로 받은 postId 의 post 가 실제로 있는지 확인
+    const post = await Post.findOne({
+      where: { id: req.params.postId }
+    })
+    // 존재하지 않는 post 에 댓글을 달려는 경우 리턴시킴
+    if (!post) {
+      return res.status(403).send('존재하지 않는 게시물입니다.')
+    }
+    const comment = await Comment.create({
+      content: req.body.content,
+      PostId: req.params.postId,
+      UserId: req.user.id
+    })
+    res.status(201).json(comment)
+  } catch(error) {
+    console.error(error)
+    next(error)
+  }
+})
+
 router.delete('/', (req, res) => { // DELETE /post
   res.json({ id: 1 })
 })
