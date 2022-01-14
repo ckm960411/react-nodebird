@@ -3,6 +3,10 @@ import produce from "immer";
 export const initialState = {
   mainPosts: [],
   imagePaths: [],
+  // 리트윗 관련
+  retweetLoading: false,
+  retweetDone: false,
+  retweetError: null,
   // 좋아요 관련
   likePostLoading: false,
   likePostDone: false,
@@ -34,6 +38,10 @@ export const initialState = {
   addCommentError: null,
 };
 
+
+export const RETWEET_REQUEST = "RETWEET_REQUEST";
+export const RETWEET_SUCCESS = "RETWEET_SUCCESS";
+export const RETWEET_FAILURE = "RETWEET_FAILURE";
 
 export const LIKE_POST_REQUEST = "LIKE_POST_REQUEST";
 export const LIKE_POST_SUCCESS = "LIKE_POST_SUCCESS";
@@ -78,6 +86,22 @@ export const addComment = (data) => ({
 const reducer = (state = initialState, action) => {
   return produce(state, (draft) => {
     switch (action.type) {
+      // 리트윗 관련
+      case RETWEET_REQUEST:
+        draft.retweetLoading = true;
+        draft.retweetDone = false;
+        draft.retweetError = null;
+        break;
+      case RETWEET_SUCCESS: {
+        draft.retweetLoading = false;
+        draft.retweetDone = true;
+        draft.mainPosts.unshift(action.data)
+        break;
+      }
+      case RETWEET_FAILURE:
+        draft.retweetLoading = false;
+        draft.retweetError = action.error;
+        break;
       // 좋아요 관련
       case LIKE_POST_REQUEST:
         draft.likePostLoading = true;

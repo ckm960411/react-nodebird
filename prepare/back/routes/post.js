@@ -118,6 +118,71 @@ router.post('/:postId/comment', isLoggedIn, async (req, res, next) => {
   }
 })
 
+router.post('/:postId/retweet', isLoggedIn, async (req, res, next) => {
+  // 오타내가지고 'RetweetId' 가 Retweet 이고, 'RetweetIdId'가 RetweetId 임..ㅠㅠ
+  try {
+    const post = await Post.findOne({
+      where: { id: req.params.postId },
+      include: [{
+        model: Post,
+        as: 'RetweetId' // =Retweet
+      }]
+    })
+    if (!post) {
+      return res.status(403).send('존재하지 않는 게시물입니다.')
+    }
+    // 자기 게시글을 자기가 리트윗하는 것과, 남이 자기글을 리트윗한 걸 다시 리트윗하는 것을 막음
+    if (req.user.id === post.UserId || (post.RetweetId && post.RetweetId.UserId === req.user.id) ) {
+      return res.status(403).send('자신의 글은 리트윗할 수 없습니다.')
+    }
+    // 리트윗한 Id 가 있다면 그 id 를, 없다면(null) 그 게시글의 id 를 씀
+    // ex) 8번글이 1번글을 리트윗 했다면 retweetTargetId는 1번, 아니라면 8번
+    const retweetTargetId = post.RetweetIdId || post.id
+    const exPost = await Post.findOne({
+      where: {
+        UserId: req.user.id,
+        RetweetIdId: retweetTargetId,
+      }
+    })
+    // 이전에 내가 리트윗했다면 막음
+    if (exPost) {
+      return res.status(403).send('이미 리트윗했습니다.')
+    }
+    const retweet = await Post.create({
+      UserId: req.user.id,
+      RetweetIdId: retweetTargetId, // RetweetId
+      content: 'retweet', // 리트윗한 게시물은 content 가 없지만 allowNull 을 false 로 해놨음
+    })
+    const retweetWithPrevPost = await Post.findOne({
+      where: { id: retweet.id },
+      include: [
+        { model: Post,
+          as: 'RetweetId',
+          include: [
+            { model: User, attributes: ['id', 'nickname'] },
+            { model: Image }
+          ]
+        },
+        { model: User,
+          attributes: ['id', 'nickname']
+        },
+        { model: User, // 좋아요 누른 사람
+          as: 'Likers',
+          attributes: ['id']
+        },
+        { model: Image },
+        { model: Comment,
+          include: [{ model: User, attributes: ['id', 'nickname'] }]
+        },
+      ]
+    })
+    res.status(201).json(retweetWithPrevPost)
+  } catch(error) {
+    console.error(error)
+    next(error)
+  }
+})
+
 router.patch('/:postId/like', isLoggedIn, async (req, res, next) => { // PATCH /post/(params)/like
   try {
     const post = await Post.findOne({ where: { id: req.params.postId }})
