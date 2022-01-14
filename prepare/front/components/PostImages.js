@@ -18,7 +18,12 @@ const PostImages = ({ images }) => {
   if (images.length === 1) {
     return (
       <>
-        <img role="presentation" src={images[0].src} alt={images[0].src} onClick={onZoom} />
+        <img 
+          role="presentation" 
+          src={`http://localhost:3065/${images[0].src}`} 
+          alt={images[0].src} 
+          onClick={onZoom} 
+        />
         {showImagesZoom && <ImagesZoom images={images} onClose={onClose} />}
       </>
     )
@@ -27,19 +32,19 @@ const PostImages = ({ images }) => {
     return (
       <>
         <div style={{ width: '50%', display: 'inline-block' }}>
-          <Image 
+          <img
             role="presentation" 
-            src={images[0].src} alt={images[0].src} 
+            src={`http://localhost:3065/${images[0].src}`} alt={images[0].src} 
             onClick={onZoom} 
-            width="100" height="100" layout='responsive' 
+            width="100%" height="100%" layout='responsive' 
           />
         </div>
         <div style={{ width: '50%', display: 'inline-block' }}>
-          <Image 
+          <img
             role="presentation" 
-            src={images[1].src} alt={images[1].src} 
+            src={`http://localhost:3065/${images[1].src}`} alt={images[1].src} 
             onClick={onZoom} 
-            width="100" height="100" layout='responsive' 
+            width="100%" height="100%" layout='responsive' 
           />
         </div>
         {showImagesZoom && <ImagesZoom images={images} onClose={onClose} />}
@@ -50,11 +55,11 @@ const PostImages = ({ images }) => {
     <>
       <div style={{ display: 'flex', alignItems: 'center'}}>
         <div style={{ width: '50%', display: 'inline-block' }}>
-          <Image 
+          <img
             role="presentation" 
-            src={images[0].src} alt={images[0].src} 
+            src={`http://localhost:3065/${images[0].src}`} alt={images[0].src} 
             onClick={onZoom} 
-            width="100" height="100" layout='responsive' 
+            width="100%" height="100%a" layout='responsive' 
           />
         </div>
         <div

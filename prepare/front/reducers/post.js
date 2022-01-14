@@ -24,6 +24,10 @@ export const initialState = {
   removePostLoading: false,
   removePostDone: false,
   removePostError: null,
+  // 이미지 업로드 관련
+  uploadImageLoading: false,
+  uploadImageDone: false,
+  uploadImageError: null,
   // 댓글 작성 관련
   addCommentLoading: false,
   addCommentDone: false,
@@ -50,6 +54,12 @@ export const ADD_POST_FAILURE = "ADD_POST_FAILURE";
 export const REMOVE_POST_REQUEST = "REMOVE_POST_REQUEST";
 export const REMOVE_POST_SUCCESS = "REMOVE_POST_SUCCESS";
 export const REMOVE_POST_FAILURE = "REMOVE_POST_FAILURE";
+
+export const UPLOAD_IMAGES_REQUEST = "UPLOAD_IMAGES_REQUEST";
+export const UPLOAD_IMAGES_SUCCESS = "UPLOAD_IMAGES_SUCCESS";
+export const UPLOAD_IMAGES_FAILURE = "UPLOAD_IMAGES_FAILURE";
+
+export const REMOVE_IMAGE = 'REMOVE_IMAGE'
 
 export const ADD_COMMENT_REQUEST = "ADD_COMMENT_REQUEST";
 export const ADD_COMMENT_SUCCESS = "ADD_COMMENT_SUCCESS";
@@ -129,6 +139,7 @@ const reducer = (state = initialState, action) => {
         draft.addPostLoading = false;
         draft.addPostDone = true;
         draft.mainPosts.unshift(action.data);
+        draft.imagePaths = []
         break;
       case ADD_POST_FAILURE:
         draft.addPostLoading = false;
@@ -149,6 +160,24 @@ const reducer = (state = initialState, action) => {
         draft.removePostLoading = false;
         draft.removePostError = action.error;
         break;
+      // 이미지 업로드 관련
+      case UPLOAD_IMAGES_REQUEST:
+        draft.uploadImageLoading = true;
+        draft.uploadImageDone = false;
+        draft.uploadImageError = null;
+        break;
+      case UPLOAD_IMAGES_SUCCESS:
+        draft.imagePaths = action.data
+        draft.uploadImageLoading = false;
+        draft.uploadImageDone = true;
+        break;
+      case UPLOAD_IMAGES_FAILURE:
+        draft.uploadImageLoading = false;
+        draft.uploadImageError = action.error;
+        break;
+      // 이미지 삭제
+      case REMOVE_IMAGE:
+        draft.imagePaths = draft.imagePaths.filter((v, i) => i !== action.data)
       // 댓글 작성 관련
       case ADD_COMMENT_REQUEST:
         draft.addCommentLoading = true;

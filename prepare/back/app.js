@@ -5,6 +5,7 @@ const cookieParser = require('cookie-parser')
 const passport = require('passport')
 const dotenv = require('dotenv')
 const morgan = require('morgan')
+const path = require('path')
 
 const postRouter = require('./routes/post')
 const userRouter = require('./routes/user')
@@ -26,8 +27,9 @@ app.use(cors({
   origin: true, // res.setHeader('Access-Control-Origin-Allow', '*')
   credentials: true, // cookie🍪를 다른 도메인간 넘겨주는 역할
 })) 
+app.use('/', express.static(path.join(__dirname, 'uploads')))
 app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
+app.use(express.urlencoded({ extended: true })) // multipart 폼이 아닌 일반파트 폼을 보내는 양식
 app.use(cookieParser(process.env.COOKIE_SECRET))
 app.use(session({
   saveUninitialized: false,
