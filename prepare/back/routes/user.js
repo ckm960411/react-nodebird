@@ -108,4 +108,88 @@ router.patch('/nickname', isLoggedIn, async (req, res, next) => {
   }
 })
 
+// PATCH /user/(params)/follow
+router.patch('/:userId/follow', isLoggedIn, async (req, res, next) => {
+  try {
+    const user = await User.findOne({ where: { id: req.params.userId }})
+    if (!user) {
+      res.status(403).send('존재하지 않는 사용자입니다.')
+    }
+    await user.addFollowers(req.user.id) // 나를 팔로워로 추가
+    res.status(200).json({ UserId: parseInt(req.params.userId, 10) })
+  } catch(error) {
+    console.error(error)
+    next(error)
+  }
+})
+
+// DELETE /user/(params)/follow
+router.delete('/:userId/follow', isLoggedIn, async (req, res, next) => {
+  try {
+    const user = await User.findOne({ where: { id: req.params.userId }})
+    if (!user) {
+      res.status(403).send('존재하지 않는 사용자입니다.')
+    }
+    await user.removeFollowers(req.user.id) // 나를 팔로워에서 제거
+    res.status(200).json({ UserId: parseInt(req.params.userId, 10) })
+  } catch(error) {
+    console.error(error)
+    next(error)
+  }
+})
+
+// GET /user/followers
+router.get('/followers', isLoggedIn, async (req, res, next) => {
+  try {
+    const user = await User.findOne({ where: { id: req.user.id }})
+    if (!user) {
+      res.status(403).send('존재하지 않는 사용자입니다.')
+    }
+    const followers = await user.getFollowers() // 나의 팔로워 찾기
+    res.status(200).json(followers)
+  } catch(error) {
+    console.error(error)
+    next(error)
+  }
+})
+
+// GET /user/followings
+router.get('/followings', isLoggedIn, async (req, res, next) => {
+  try {
+    const user = await User.findOne({ where: { id: req.user.id }})
+    if (!user) {
+      res.status(403).send('존재하지 않는 사용자입니다.')
+    }
+    const followings = await user.getFollowings() // 내가 팔로잉하는 사용자들 찾기
+    res.status(200).json(followings)
+  } catch(error) {
+    console.error(error)
+    next(error)
+  }
+})
+
+// DELETE /user/follower/(params)
+router.delete('/follower/:userId', isLoggedIn, async (req, res, next) => {
+  try {
+    // 그 사람의 팔로잉에서 날 끊기
+    const user = await User.findOne({ where: { id: req.params.userId } })
+    if (!user) {
+      res.status(403).send('존재하지 않는 사용자입니다.')
+    }
+    await user.removeFollowings(req.user.id)
+    /** 내 팔로워에서 그 사람 끊기
+      const user = await User.findOne({ where: { id: req.user.id } })
+      if (!user) {
+        res.status(403).send('존재하지 않는 사용자입니다.')
+      }
+      await user.removeFollowers(req.params.userId)
+    */
+    
+    res.status(200).json({ UserId: parseInt(req.params.userId, 10)})
+  } catch(error) {
+    console.error(error)
+    next(error)
+  }
+})
+
 module.exports = router
