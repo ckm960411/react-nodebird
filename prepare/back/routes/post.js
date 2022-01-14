@@ -64,7 +64,7 @@ router.post('/:postId/comment', isLoggedIn, async (req, res, next) => {
   }
 })
 
-router.patch('/:postId/like', async (req, res, next) => { // PATCH /post/(params)/like
+router.patch('/:postId/like', isLoggedIn, async (req, res, next) => { // PATCH /post/(params)/like
   try {
     const post = await Post.findOne({ where: { id: req.params.postId }})
     if (!post) { // Post 가 없는데 좋아요할 것도 없음
@@ -78,7 +78,7 @@ router.patch('/:postId/like', async (req, res, next) => { // PATCH /post/(params
   }
 })
 
-router.delete('/:postId/like', async (req, res, next) => { // DELETE /post/(params)/unlike
+router.delete('/:postId/like', isLoggedIn, async (req, res, next) => { // DELETE /post/(params)/unlike
   try {
     const post = await Post.findOne({ where: { id: req.params.postId }})
     if (!post) {
@@ -92,8 +92,19 @@ router.delete('/:postId/like', async (req, res, next) => { // DELETE /post/(para
   }
 })
 
-router.delete('/', (req, res) => { // DELETE /post
-  res.json({ id: 1 })
+router.delete('/:postId', isLoggedIn, async (req, res, next) => { // DELETE /post
+  try {
+    await Post.destroy({
+      where: { 
+        id: req.params.postId, // 게시글 id 와 일치하는지 확인
+        UserId: req.user.id, // 오직 본인만 삭제할 수 있도록 한번 더 검증
+      }
+    })
+    res.status(200).json({ PostId: parseInt(req.params.postId, 10) })
+  } catch(error) {
+    console.error(error)
+    next(error)
+  }
 })
 
 module.exports = router

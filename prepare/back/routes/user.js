@@ -95,4 +95,17 @@ router.post('/', isNotLoggedIn, async (req, res, next) => { // POST /user
   }
 })
 
+router.patch('/nickname', isLoggedIn, async (req, res, next) => {
+  try {
+    User.update(
+      { nickname: req.body.nickname }, // 프론트에서 제공한 닉네임으로 수정
+      { where: { id: req.user.id }},
+    )
+    res.status(200).json({ nickname: req.body.nickname })
+  } catch(error) {
+    console.error(error)
+    next(error)
+  }
+})
+
 module.exports = router
