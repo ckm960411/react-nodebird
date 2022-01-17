@@ -8,6 +8,7 @@ const { isLoggedIn, isNotLoggedIn } = require('./middlewares')
 const router = express.Router()
 
 router.get('/', async (req, res, next) => {
+  console.log(req.headers) // 헤더 안에 cookie 가 있으므로 쿠키가 잘 전돨디는지 확인
   try {
     if (req.user) {
       // req.user 가 있으면 user 를 가져옴
